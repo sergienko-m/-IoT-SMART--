@@ -1,0 +1,20 @@
+sitemap greenhouse label="Розумна теплиця" {
+  Frame label="Моніторинг" {
+    Text item=GH_Air_Temperature
+    Text item=GH_Air_Humidity
+    Text item=GH_Soil_Moisture
+    Text item=GH_Soil_Temperature
+    Text item=GH_Illuminance
+    Text item=GH_CO2_Index
+    Text item=GH_Presence
+    Text item=GH_Water_Pressure
+    Text item=GH_Data_Valid
+  }
+  Frame label="Керування" {
+    Switch item=GH_Pump
+    Slider item=GH_Fan
+    Slider item=GH_Light
+    Slider item=GH_Window
+    Switch item=GH_Heater
+  }
+}

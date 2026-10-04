@@ -1,0 +1,19 @@
+Bridge mqtt:broker:mosquitto "Mosquitto" [ host="192.168.1.10", port=1883, secure=false, username="greenhouse", password="change_me" ] {
+  Thing topic greenhouse "Greenhouse ESP32" {
+    Channels:
+      Type number : airTemperature "Air temperature" [ stateTopic="greenhouse/zone1/sensors/air/temperature" ]
+      Type number : airHumidity "Air humidity" [ stateTopic="greenhouse/zone1/sensors/air/humidity" ]
+      Type number : soilMoisture "Soil moisture" [ stateTopic="greenhouse/zone1/sensors/soil/moisture" ]
+      Type number : soilTemperature "Soil temperature" [ stateTopic="greenhouse/zone1/sensors/soil/temperature" ]
+      Type number : illuminance "Illuminance" [ stateTopic="greenhouse/zone1/sensors/light/lux" ]
+      Type number : co2Index "CO2 index" [ stateTopic="greenhouse/zone1/sensors/air/co2_index" ]
+      Type switch : presence "Presence" [ stateTopic="greenhouse/zone1/sensors/presence", on="ON", off="OFF" ]
+      Type switch : pressure "Water pressure" [ stateTopic="greenhouse/zone1/sensors/pressure", on="OK", off="LOW" ]
+      Type switch : dataValid "Data valid" [ stateTopic="greenhouse/zone1/diagnostics/data_valid", on="ON", off="OFF" ]
+      Type switch : pump "Water pump" [ commandTopic="greenhouse/zone1/actuators/pump/command", stateTopic="greenhouse/zone1/actuators/pump/state", on="ON", off="OFF" ]
+      Type dimmer : fan "Ventilation fan" [ commandTopic="greenhouse/zone1/actuators/fan/command", stateTopic="greenhouse/zone1/actuators/fan/state" ]
+      Type dimmer : light "Phytolamp" [ commandTopic="greenhouse/zone1/actuators/light/command", stateTopic="greenhouse/zone1/actuators/light/state" ]
+      Type dimmer : window "Window" [ commandTopic="greenhouse/zone1/actuators/window/command", stateTopic="greenhouse/zone1/actuators/window/state" ]
+      Type switch : heater "Heater" [ commandTopic="greenhouse/zone1/actuators/heater/command", stateTopic="greenhouse/zone1/actuators/heater/state", on="ON", off="OFF" ]
+  }
+}

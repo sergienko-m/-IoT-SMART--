@@ -1,0 +1,59 @@
+var Timer wateringTimer = null
+var Number lastWatering = 0
+
+rule "Greenhouse adaptive climate"
+when
+  Time cron "0 */5 * * * ?"
+then
+  if (GH_Data_Valid.state != ON) return;
+  // Вентиляція: плавне керування за температурою та CO2.
+  if (GH_Air_Temperature.state instanceof Number) {
+    val t = (GH_Air_Temperature.state as Number).doubleValue
+    val co2 = if (GH_CO2_Index.state instanceof Number) (GH_CO2_Index.state as Number).doubleValue else 400
+    var fan = 20
+    if (t > 24) fan = Math::min(100, 20 + ((t - 24) * 16).intValue)
+    if (co2 > 1000) fan = Math::max(fan, 70)
+    GH_Fan.sendCommand(fan)
+    GH_Window.sendCommand(Math::min(100, fan + 10))
+  }
+  // Терморегулятор ґрунту з гістерезисом 18/20 °C.
+  if (GH_Soil_Temperature.state instanceof Number) {
+    val gt = (GH_Soil_Temperature.state as Number).doubleValue
+    if (gt < 18) GH_Heater.sendCommand(ON)
+    else if (gt > 20) GH_Heater.sendCommand(OFF)
+  }
+  // Освітлення вмикається тільки в денному робочому вікні та за слабкого світла.
+  val hour = now.getHourOfDay
+  if (hour >= 6 && hour < 20 && GH_Illuminance.state instanceof Number) {
+    val lux = (GH_Illuminance.state as Number).doubleValue
+    GH_Light.sendCommand(if (lux < 12000) 75 else 0)
+  } else GH_Light.sendCommand(0)
+end
+
+rule "Greenhouse irrigation with pressure protection"
+when
+  Time cron "0 */2 * * * ?"
+then
+  if (GH_Data_Valid.state != ON || GH_Water_Pressure.state != ON) { GH_Pump.sendCommand(OFF); return; }
+  if (GH_Soil_Moisture.state instanceof Number) {
+    val moisture = (GH_Soil_Moisture.state as Number).doubleValue
+    if (moisture < 35 && (now.millis - lastWatering) > 1800000) {
+      GH_Pump.sendCommand(ON); lastWatering = now.millis
+      if (wateringTimer !== null) wateringTimer.cancel
+      wateringTimer = createTimer(now.plusMinutes(3), [| GH_Pump.sendCommand(OFF) ])
+    } else if (moisture > 55) GH_Pump.sendCommand(OFF)
+  }
+end
+
+rule "Emergency shutdown"
+when
+  Item GH_Data_Valid changed to OFF or
+  Item GH_Water_Pressure changed to OFF or
+  Item GH_Air_Temperature changed
+then
+  if (GH_Data_Valid.state == OFF || GH_Water_Pressure.state == OFF ||
+      (GH_Air_Temperature.state instanceof Number && (GH_Air_Temperature.state as Number).doubleValue > 45)) {
+    GH_Pump.sendCommand(OFF); GH_Heater.sendCommand(OFF); GH_Light.sendCommand(0)
+    GH_Fan.sendCommand(100); GH_Window.sendCommand(100)
+  }
+end

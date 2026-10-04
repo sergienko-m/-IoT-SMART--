@@ -1,0 +1,14 @@
+Number:Temperature GH_Air_Temperature "Температура повітря [%.1f °C]" { channel="mqtt:topic:mosquitto:greenhouse:airTemperature" }
+Number:Dimensionless GH_Air_Humidity "Вологість повітря [%.1f %%]" { channel="mqtt:topic:mosquitto:greenhouse:airHumidity" }
+Number:Dimensionless GH_Soil_Moisture "Вологість ґрунту [%.1f %%]" { channel="mqtt:topic:mosquitto:greenhouse:soilMoisture" }
+Number:Temperature GH_Soil_Temperature "Температура ґрунту [%.1f °C]" { channel="mqtt:topic:mosquitto:greenhouse:soilTemperature" }
+Number:Illuminance GH_Illuminance "Освітленість [%.0f lx]" { channel="mqtt:topic:mosquitto:greenhouse:illuminance" }
+Number GH_CO2_Index "Індекс CO₂ [%d]" { channel="mqtt:topic:mosquitto:greenhouse:co2Index" }
+Switch GH_Presence "Рух [%s]" { channel="mqtt:topic:mosquitto:greenhouse:presence" }
+Switch GH_Water_Pressure "Тиск води [%s]" { channel="mqtt:topic:mosquitto:greenhouse:pressure" }
+Switch GH_Data_Valid "Дані валідні [%s]" { channel="mqtt:topic:mosquitto:greenhouse:dataValid" }
+Switch GH_Pump "Насос" { channel="mqtt:topic:mosquitto:greenhouse:pump" }
+Dimmer GH_Fan "Вентилятор [%d %%]" { channel="mqtt:topic:mosquitto:greenhouse:fan" }
+Dimmer GH_Light "Фітолампа [%d %%]" { channel="mqtt:topic:mosquitto:greenhouse:light" }
+Dimmer GH_Window "Вікно [%d %%]" { channel="mqtt:topic:mosquitto:greenhouse:window" }
+Switch GH_Heater "Нагрів" { channel="mqtt:topic:mosquitto:greenhouse:heater" }

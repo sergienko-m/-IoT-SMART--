@@ -1,0 +1,16 @@
+flowchart LR
+  subgraph Field[Теплиця / польовий рівень]
+    S[ESP32 DevKit]
+    D1[DHT22\nT/H повітря]
+    D2[Capacitive\nsoil moisture]
+    D3[BH1750\nосвітленість]
+    D4[MQ-135\nіндекс CO₂]
+    D5[DS18B20\nT ґрунту]
+    A[Насос • вентилятор\nфітолампа • сервопривід • нагрів]
+    D1-->S; D2-->S; D3-->S; D4-->S; D5-->S; S-->A
+  end
+  S -- Wi-Fi / MQTT TLS --> M[Mosquitto\nMQTT broker]
+  M --> O[OpenHAB 3.x\nMQTT binding + rules]
+  O --> UI[MainUI / Sitemap\nтелефон • ПК]
+  O --> N[Сповіщення\nTelegram / Email]
+  O --> DB[InfluxDB + Grafana\nісторія та аналітика]
